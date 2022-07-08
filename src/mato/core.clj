@@ -58,11 +58,11 @@
         (println "oops")
         (do
           (println "ending")
-          (print-scene mato))                               ; scene after last move
-        (do
-          (println "playing")
-          (print-scene mato)
-          (recur (move-v2 mato (first moves-still-left)) (rest moves-still-left)))))))
+          (print-scene mato)))                              ; scene after last move
+      (do
+        (println "playing")
+        (print-scene mato)
+        (recur (move-v2 mato (first moves-still-left)) (rest moves-still-left))))))
 
 (comment
   (next-move-v3 original-mato (seq [down down right right right]))
