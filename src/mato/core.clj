@@ -2,7 +2,7 @@
 
 (defn create-coord [x y] {:x x :y y})
 
-(def original-mato
+(def original-worm
   [(create-coord 0 5) (create-coord 1 5) (create-coord 2 5)]
   )
 
@@ -21,21 +21,21 @@
   )
 
 (defn move-v2
-  ([mato movement grows?]
+  ([worm movement grows?]
    (if (nil? movement)
-     mato
+     worm
      (if grows?
-       (cons (change-coord (first mato) movement) mato)
-       (->> mato
-            (cons (change-coord (first mato) movement))
+       (cons (change-coord (first worm) movement) worm)
+       (->> worm
+            (cons (change-coord (first worm) movement))
             (drop-last)
             (vec)
             )
        )
      )
    )
-  ([mato movement]
-   (move-v2 mato movement false))
+  ([worm movement]
+   (move-v2 worm movement false))
   )
 
 (comment
@@ -45,8 +45,8 @@
 (def scene-width 20)
 (def scene-height 10)
 
-(defn collision? [mato]
-  (let [head (first mato)
+(defn collision? [worm]
+  (let [head (first worm)
         x (get head :x 0)
         y (get head :y 0)]
     (or (neg? x) (neg? y))))
@@ -62,13 +62,13 @@
   (has-coords-in-it? (create-coord 1 2) nil)
   (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2))))
 
-(defn print-scene-v2 [mato goodies]
+(defn print-scene-v2 [worm goodies]
   (doseq [y (range scene-height)]
     (dotimes [x scene-width]
       (let [this-place (create-coord x y)]
         (print
           (cond
-            (has-coords-in-it? this-place mato) piece-of-worm
+            (has-coords-in-it? this-place worm) piece-of-worm
             (has-coords-in-it? this-place goodies) piece-of-goodies
             :else piece-of-background)))
       (inc x))
@@ -119,9 +119,9 @@
             next-moves))))))
 
 (comment
-  original-mato
-  (next-move-v4 original-mato [(create-coord 0 6)] (seq [down down right right right]))
-  (next-move-v4 original-mato [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)] (seq [down down right right right up]))
-  (next-move-v4 original-mato () (seq [down down right right right]))
-  (next-move-v4 original-mato () (seq [left left]))
+  original-worm
+  (next-move-v4 original-worm [(create-coord 0 6)] (seq [down down right right right]))
+  (next-move-v4 original-worm [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)] (seq [down down right right right up]))
+  (next-move-v4 original-worm () (seq [down down right right right]))
+  (next-move-v4 original-worm () (seq [left left]))
   )
