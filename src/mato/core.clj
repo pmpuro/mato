@@ -83,25 +83,38 @@
   (will-eat [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [up])
   )
 
-(defn next-move-v3 [worm goodies moves]
+(defn drop-first-if [condition collection]
+  (if condition
+    (rest collection)
+    collection)
+  )
+
+(comment
+  (drop-first-if true [1 2 3])
+  (drop-first-if false [1 2 3])
+  )
+
+(defn next-move-v4 [worm goodies moves]
   (loop [mato worm
+         goodies-still-left goodies
          moves-still-left moves]
     (if (empty? moves-still-left)
       (if (collision? mato)
         (println "oops")
         (do
           (println "ending")
-          (print-scene-v2 mato goodies)))                              ; scene after last move
+          (print-scene-v2 mato goodies-still-left)))                              ; scene after last move
       (do
         (println "playing")
-        (print-scene-v2 mato goodies)
+        (print-scene-v2 mato goodies-still-left)
         (recur
-          (move-v2 mato (first moves-still-left) (will-eat mato goodies (rest moves-still-left)))
+          (move-v2 mato (first moves-still-left) (will-eat mato goodies-still-left (rest moves-still-left)))
+          (drop-first-if (will-eat mato goodies-still-left (rest moves-still-left)) goodies-still-left)
           (rest moves-still-left))))))
 
 (comment
   original-mato
-  (next-move-v3 original-mato [(create-coord 0 6)] (seq [down down right right right]))
-  (next-move-v3 original-mato () (seq [down down right right right]))
-  (next-move-v3 original-mato () (seq [left left]))
+  (next-move-v4 original-mato [(create-coord 0 6)] (seq [down down right right right]))
+  (next-move-v4 original-mato () (seq [down down right right right]))
+  (next-move-v4 original-mato () (seq [left left]))
   )
