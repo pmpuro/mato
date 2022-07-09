@@ -50,6 +50,7 @@
 
 (def piece-of-worm "X")
 (def piece-of-background "O")
+(def piece-of-goodies "g")
 
 (defn has-coords-in-it? [coord collection]
   (some #(= % coord) collection))
@@ -58,12 +59,15 @@
   (has-coords-in-it? (create-coord 1 2) nil)
   (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2))))
 
-(defn print-scene [mato]
+(defn print-scene-v2 [mato goodies]
   (doseq [y (range 10)]
     (dotimes [x 20]
-      (if (has-coords-in-it? (create-coord x y) mato)
-        (print piece-of-worm)
-        (print piece-of-background)
+      (print
+        (cond
+          (has-coords-in-it? (create-coord x y) mato) piece-of-worm
+          (has-coords-in-it? (create-coord x y) goodies) piece-of-goodies
+          :else piece-of-background
+          )
         )
       (inc x))
     (newline)))
@@ -87,10 +91,10 @@
         (println "oops")
         (do
           (println "ending")
-          (print-scene mato)))                              ; scene after last move
+          (print-scene-v2 mato goodies)))                              ; scene after last move
       (do
         (println "playing")
-        (print-scene mato)
+        (print-scene-v2 mato goodies)
         (recur
           (move-v2 mato (first moves-still-left) (will-eat mato goodies (rest moves-still-left)))
           (rest moves-still-left))))))
