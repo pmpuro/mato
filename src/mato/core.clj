@@ -103,14 +103,16 @@
         (println "oops")
         (do
           (println "ending")
-          (print-scene-v2 mato goodies-still-left)))                              ; scene after last move
+          (print-scene-v2 mato goodies-still-left)))        ; scene after last move
       (do
         (println "playing")
         (print-scene-v2 mato goodies-still-left)
-        (recur
-          (move-v2 mato (first moves-still-left) (will-eat mato goodies-still-left (rest moves-still-left)))
-          (drop-first-if (will-eat mato goodies-still-left (rest moves-still-left)) goodies-still-left)
-          (rest moves-still-left))))))
+        (let [next-movement (first moves-still-left)
+              next-moves (rest moves-still-left)]
+          (recur
+            (move-v2 mato next-movement (will-eat mato goodies-still-left next-moves))
+            (drop-first-if (will-eat mato goodies-still-left next-moves) goodies-still-left)
+            next-moves))))))
 
 (comment
   original-mato
