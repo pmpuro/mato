@@ -49,7 +49,7 @@
   (let [head (first worm)
         x (get head :x 0)
         y (get head :y 0)]
-    (or (neg? x) (neg? y))))
+    (or (neg? x) (neg? y) (>= x scene-width) (>= y scene-height))))
 
 (def piece-of-worm "X")
 (def piece-of-background "O")
@@ -105,7 +105,7 @@
         (println "oops")
         (do
           (println "ending")
-          (print-scene-v2 current-worm goodies-still-left)))        ; scene after last move
+          (print-scene-v2 current-worm goodies-still-left))) ; scene after last move
       (do
         (println "playing")
         (print-scene-v2 current-worm goodies-still-left)
