@@ -13,8 +13,12 @@
 
 (defn change-coord [coord movement]
   (hash-map
-    :x (+ (:x coord) (:x movement))
-    :y (+ (:y coord) (:y movement))))
+    :x (+ (:x coord) (get movement :x 0))
+    :y (+ (:y coord) (get movement :y 0))))
+
+(comment
+  (change-coord (create-coord 1 1) right)
+  )
 
 (defn move-v2
   ([mato movement grows?]
@@ -34,10 +38,14 @@
    (move-v2 mato movement false))
   )
 
+(comment
+  (move-v2 [(create-coord 1 1)] right true)
+  )
+
 (defn collision? [mato]
   (let [head (first mato)
-        x (:x head)
-        y (:y head)]
+        x (get head :x 0)
+        y (get head :y 0)]
     (or (neg? x) (neg? y))))
 
 (def piece-of-worm "X")
@@ -59,15 +67,18 @@
     false))
 
 (comment
-  (has-coords-in-it? (create-coord 1 2) (list  (create-coord 2 2 ) (create-coord 1 2)))
-  )
+  (has-coords-in-it? (create-coord 1 2) nil)
+  (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2))))
 
 (defn will-eat [worm goodies moves]
   (let [head (first worm)
         next-step (first moves)
         eating-at (change-coord head next-step)]
-      (has-coords-in-it? eating-at goodies)
-    )
+    (has-coords-in-it? eating-at goodies)))
+
+(comment
+  (will-eat [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [left])
+  (will-eat [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [up])
   )
 
 (defn next-move-v3 [worm goodies moves]
@@ -82,9 +93,13 @@
       (do
         (println "playing")
         (print-scene mato)
-        (recur (move-v2 mato (first moves-still-left)) (rest moves-still-left))))))
+        (recur
+          (move-v2 mato (first moves-still-left) (will-eat mato goodies (rest moves-still-left)))
+          (rest moves-still-left))))))
 
 (comment
-  (next-move-v3 original-mato ()  (seq [down down right right right]))
-  (next-move-v3 original-mato ()  (seq [left left]))
+  original-mato
+  (next-move-v3 original-mato [(create-coord 0 6)] (seq [down down right right right]))
+  (next-move-v3 original-mato () (seq [down down right right right]))
+  (next-move-v3 original-mato () (seq [left left]))
   )
