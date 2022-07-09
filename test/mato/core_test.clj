@@ -8,9 +8,16 @@
           x2 10
           y1 2
           y2 20
-          x (+ x1 x2)
-          y (+ y1 y2)]
-      (is (= (hash-map :x x :y y) (mato.core/change-coord {:x x1 :y y1} {:x x2 :y y2}))))))
+          expected-x (+ x1 x2)
+          expected-y (+ y1 y2)]
+      (is (= (hash-map :x expected-x :y expected-y) (mato.core/change-coord {:x x1 :y y1} {:x x2 :y y2})))))
+  (testing "movement :x and :y are optional and zero by default"
+    (let [x1 1
+          y1 2
+          expected-x x1
+          expected-y y1
+          empty-map {}]
+      (is (= (hash-map :x expected-x :y expected-y) (mato.core/change-coord {:x x1 :y y1} empty-map))))))
 
 (comment
   (run-all-tests))
