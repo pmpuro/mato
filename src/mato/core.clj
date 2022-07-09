@@ -109,16 +109,17 @@
         (print-scene-v2 mato goodies-still-left)
         (let [next-movement (first moves-still-left)
               next-moves (rest moves-still-left)
-              next-movement-coord (change-coord next-movement (first mato))]
+              next-movement-coord (change-coord next-movement (first mato))
+              next-movement-will-eat (will-eat mato goodies-still-left next-moves)]
           (recur
-            (move-v2 mato next-movement (will-eat mato goodies-still-left next-moves))
-            (remove-element-if (will-eat mato goodies-still-left next-moves) next-movement-coord goodies-still-left)
+            (move-v2 mato next-movement next-movement-will-eat)
+            (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
             next-moves))))))
 
 (comment
   original-mato
   (next-move-v4 original-mato [(create-coord 0 6)] (seq [down down right right right]))
-  (next-move-v4 original-mato [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)] (seq [down down right right right]))
+  (next-move-v4 original-mato [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)] (seq [down down right right right up]))
   (next-move-v4 original-mato () (seq [down down right right right]))
   (next-move-v4 original-mato () (seq [left left]))
   )
