@@ -40,12 +40,15 @@
         y (:y head)]
     (or (neg? x) (neg? y))))
 
+(def piece-of-worm "X")
+(def piece-of-background "O")
+
 (defn print-scene [mato]
   (doseq [y (range 10)]
     (dotimes [x 20]
       (if (some #(= % (hash-map :x x :y y)) mato)
-        (print "X")
-        (print "O")
+        (print piece-of-worm)
+        (print piece-of-background)
         )
       (inc x))
     (newline)))
