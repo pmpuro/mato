@@ -53,7 +53,24 @@
       (inc x))
     (newline)))
 
-(defn next-move-v3 [worm moves]
+(defn has-coords-in-it? [coord collection]
+  (if (some #(= % coord) collection)
+    true
+    false))
+
+(comment
+  (has-coords-in-it? (create-coord 1 2) (list  (create-coord 2 2 ) (create-coord 1 2)))
+  )
+
+(defn will-eat [worm goodies moves]
+  (let [head (first worm)
+        next-step (first moves)
+        eating-at (change-coord head next-step)]
+      (has-coords-in-it? eating-at goodies)
+    )
+  )
+
+(defn next-move-v3 [worm goodies moves]
   (loop [mato worm
          moves-still-left moves]
     (if (empty? moves-still-left)
@@ -68,6 +85,6 @@
         (recur (move-v2 mato (first moves-still-left)) (rest moves-still-left))))))
 
 (comment
-  (next-move-v3 original-mato (seq [down down right right right]))
-  (next-move-v3 original-mato (seq [left left]))
+  (next-move-v3 original-mato ()  (seq [down down right right right]))
+  (next-move-v3 original-mato ()  (seq [left left]))
   )
