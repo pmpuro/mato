@@ -65,13 +65,12 @@
 (defn print-scene-v2 [mato goodies]
   (doseq [y (range scene-height)]
     (dotimes [x scene-width]
-      (print
-        (cond
-          (has-coords-in-it? (create-coord x y) mato) piece-of-worm
-          (has-coords-in-it? (create-coord x y) goodies) piece-of-goodies
-          :else piece-of-background
-          )
-        )
+      (let [this-place (create-coord x y)]
+        (print
+          (cond
+            (has-coords-in-it? this-place mato) piece-of-worm
+            (has-coords-in-it? this-place goodies) piece-of-goodies
+            :else piece-of-background)))
       (inc x))
     (newline)))
 
