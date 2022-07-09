@@ -83,15 +83,15 @@
   (will-eat [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [up])
   )
 
-(defn drop-first-if [condition collection]
+(defn remove-element-if [condition goodie collection]
   (if condition
-    (rest collection)
+    (remove #(= % goodie) collection)
     collection)
   )
 
 (comment
-  (drop-first-if true [1 2 3])
-  (drop-first-if false [1 2 3])
+  (remove-element-if true 2 [1 2 3])
+  (remove-element-if false 2 [1 2 3])
   )
 
 (defn next-move-v4 [worm goodies moves]
@@ -108,15 +108,17 @@
         (println "playing")
         (print-scene-v2 mato goodies-still-left)
         (let [next-movement (first moves-still-left)
-              next-moves (rest moves-still-left)]
+              next-moves (rest moves-still-left)
+              next-movement-coord (change-coord next-movement (first mato))]
           (recur
             (move-v2 mato next-movement (will-eat mato goodies-still-left next-moves))
-            (drop-first-if (will-eat mato goodies-still-left next-moves) goodies-still-left)
+            (remove-element-if (will-eat mato goodies-still-left next-moves) next-movement-coord goodies-still-left)
             next-moves))))))
 
 (comment
   original-mato
   (next-move-v4 original-mato [(create-coord 0 6)] (seq [down down right right right]))
+  (next-move-v4 original-mato [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)] (seq [down down right right right]))
   (next-move-v4 original-mato () (seq [down down right right right]))
   (next-move-v4 original-mato () (seq [left left]))
   )
