@@ -62,9 +62,7 @@
     (newline)))
 
 (defn has-coords-in-it? [coord collection]
-  (if (some #(= % coord) collection)
-    true
-    false))
+  (some #(= % coord) collection))
 
 (comment
   (has-coords-in-it? (create-coord 1 2) nil)
