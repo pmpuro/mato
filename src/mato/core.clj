@@ -74,15 +74,15 @@
       (inc x))
     (newline)))
 
-(defn will-eat [worm goodies moves]
+(defn will-eat? [worm goodies moves]
   (let [head (first worm)
         next-step (first moves)
         eating-at (change-coord head next-step)]
     (has-coords-in-it? eating-at goodies)))
 
 (comment
-  (will-eat [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [left])
-  (will-eat [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [up])
+  (will-eat? [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [left])
+  (will-eat? [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [up])
   )
 
 (defn remove-element-if [condition goodie collection]
@@ -112,7 +112,7 @@
         (let [next-movement (first moves-still-left)
               next-moves (rest moves-still-left)
               next-movement-coord (change-coord next-movement (first mato))
-              next-movement-will-eat (will-eat mato goodies-still-left next-moves)]
+              next-movement-will-eat (will-eat? mato goodies-still-left next-moves)]
           (recur
             (move-v2 mato next-movement next-movement-will-eat)
             (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
