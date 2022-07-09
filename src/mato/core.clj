@@ -51,22 +51,22 @@
 (def piece-of-worm "X")
 (def piece-of-background "O")
 
-(defn print-scene [mato]
-  (doseq [y (range 10)]
-    (dotimes [x 20]
-      (if (some #(= % (hash-map :x x :y y)) mato)
-        (print piece-of-worm)
-        (print piece-of-background)
-        )
-      (inc x))
-    (newline)))
-
 (defn has-coords-in-it? [coord collection]
   (some #(= % coord) collection))
 
 (comment
   (has-coords-in-it? (create-coord 1 2) nil)
   (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2))))
+
+(defn print-scene [mato]
+  (doseq [y (range 10)]
+    (dotimes [x 20]
+      (if (has-coords-in-it? (create-coord x y) mato)
+        (print piece-of-worm)
+        (print piece-of-background)
+        )
+      (inc x))
+    (newline)))
 
 (defn will-eat [worm goodies moves]
   (let [head (first worm)
