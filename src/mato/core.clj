@@ -42,6 +42,9 @@
   (move-v2 [(create-coord 1 1)] right true)
   )
 
+(def scene-width 20)
+(def scene-height 10)
+
 (defn collision? [mato]
   (let [head (first mato)
         x (get head :x 0)
@@ -60,8 +63,8 @@
   (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2))))
 
 (defn print-scene-v2 [mato goodies]
-  (doseq [y (range 10)]
-    (dotimes [x 20]
+  (doseq [y (range scene-height)]
+    (dotimes [x scene-width]
       (print
         (cond
           (has-coords-in-it? (create-coord x y) mato) piece-of-worm
