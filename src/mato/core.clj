@@ -97,24 +97,24 @@
   )
 
 (defn next-move-v4 [worm goodies moves]
-  (loop [mato worm
+  (loop [current-worm worm
          goodies-still-left goodies
          moves-still-left moves]
     (if (empty? moves-still-left)
-      (if (collision? mato)
+      (if (collision? current-worm)
         (println "oops")
         (do
           (println "ending")
-          (print-scene-v2 mato goodies-still-left)))        ; scene after last move
+          (print-scene-v2 current-worm goodies-still-left)))        ; scene after last move
       (do
         (println "playing")
-        (print-scene-v2 mato goodies-still-left)
+        (print-scene-v2 current-worm goodies-still-left)
         (let [next-movement (first moves-still-left)
               next-moves (rest moves-still-left)
-              next-movement-coord (change-coord next-movement (first mato))
-              next-movement-will-eat (will-eat? mato goodies-still-left next-moves)]
+              next-movement-coord (change-coord next-movement (first current-worm))
+              next-movement-will-eat (will-eat? current-worm goodies-still-left next-moves)]
           (recur
-            (move-v2 mato next-movement next-movement-will-eat)
+            (move-v2 current-worm next-movement next-movement-will-eat)
             (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
             next-moves))))))
 
