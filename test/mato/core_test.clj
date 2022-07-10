@@ -19,5 +19,24 @@
           empty-map {}]
       (is (= (hash-map :x expected-x :y expected-y) (mato.core/change-coord {:x x1 :y y1} empty-map))))))
 
+(deftest test-collision
+  (testing "no collision"
+    (are [expected result]
+      (= expected result)
+      false (collision? [(create-coord 1 0) (create-coord 1 1)])
+      false (collision? [(create-coord 1 1) (create-coord 2 1)])
+      false (collision? [(create-coord 0 1) (create-coord 1 1)])
+      false (collision? [(create-coord (dec scene-width) 1)])
+      false (collision? [(create-coord 1 (dec scene-height))])
+      )
+    )
+  (testing "collision"
+    (are [expected result]
+      (= expected result)
+      true (collision? [(create-coord 0 -1)])
+      true (collision? [(create-coord -1 0)])
+      true (collision? [(create-coord scene-width 1)])
+      true (collision? [(create-coord 1 scene-height)]))))
+
 (comment
   (run-all-tests))
