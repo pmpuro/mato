@@ -174,7 +174,20 @@
 (def screen (s/get-screen :swing))
 (def c (async/chan 1))
 
+(defn bootstrap []
+  (let [screen (s/get-screen :swing)
+        channel (async/chan 1)]
+    (next-move-v5
+      channel
+      (partial s/put-string screen)
+      (partial s/redraw screen)
+      [(create-coord 4 3) (create-coord 3 3) (create-coord 2 3)]
+      [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)])
+    (pull-input screen channel)))
+
 (comment
+
+  (bootstrap)
 
   (next-move-v5
     c
