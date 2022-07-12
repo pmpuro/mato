@@ -141,7 +141,7 @@
   (next-move-v4 original-worm () (seq [left left]))
   )
 
-(defn next-move-v5 [moves-channel print-f redraw-f worm goodies]
+(defn engine [moves-channel print-f redraw-f worm goodies]
   (async/go-loop [current-worm worm
                   goodies-still-left goodies]
     (print-scene-v3 print-f redraw-f current-worm goodies-still-left)
@@ -174,25 +174,25 @@
     )
   )
 
-(def screen (s/get-screen :swing))
-(def c (async/chan 1))
+; (def screen (s/get-screen :swing))
+; (def c (async/chan 1))
 
 (defn bootstrap []
   (let [screen (s/get-screen :swing)
-        channel (async/chan 1)]
-    (next-move-v5
-      channel
-      (partial s/put-string screen)
-      (partial s/redraw screen)
-      [(create-coord 4 3) (create-coord 3 3) (create-coord 2 3)]
-      [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)])
+        channel (async/chan 1)
+        worm [(create-coord 4 3) (create-coord 3 3) (create-coord 2 3)]
+        goodies [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)]
+        put-string-f (partial s/put-string screen)
+        redraw-f (partial s/redraw screen)]
+    (print-scene-v3 put-string-f redraw-f worm goodies)
+    (engine channel put-string-f redraw-f worm goodies)
     (pull-input screen channel)))
 
 (comment
 
   (bootstrap)
 
-  (next-move-v5
+  (engine
     c
     (partial s/put-string screen)
     (partial s/redraw screen)
