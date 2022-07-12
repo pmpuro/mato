@@ -77,6 +77,18 @@
       (inc x))
     (newline)))
 
+(defn print-scene-v3 [print-f redraw-f worm goodies]
+  (doseq [y (range scene-height)]
+    (dotimes [x scene-width]
+      (let [this-place (create-coord x y)]
+        (print-f x y
+                 (cond
+                   (has-coords-in-it? this-place worm) piece-of-worm
+                   (has-coords-in-it? this-place goodies) piece-of-goodies
+                   :else piece-of-background)))
+      (inc x)))
+  (redraw-f))
+
 (defn will-eat? [worm goodies moves]
   (let [head (first worm)
         next-step (first moves)
@@ -121,6 +133,14 @@
             (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
             next-moves))))))
 
+(defn next-move-v5 [moves-channel print-f redraw-f worm goodies]
+  (async/go-loop [current-worm worm
+                  goodies-still-left goodies]
+    (when-let [next-movement (async/<! moves-channel)]
+      (print-scene-v3 print-f redraw-f current-worm goodies-still-left)
+      (when (not (collision? current-worm))
+        (recur (move-v2 current-worm next-movement false) goodies-still-left)))))
+
 (comment
   original-worm
   (next-move-v4 original-worm [(create-coord 0 6)] (seq [down down right right right]))
@@ -130,13 +150,12 @@
   )
 
 
-(defn pull-input [out-channel]
-  (let [screen (s/get-screen :swing)
-        key-lookup (hash-map \h left \l right \k up \j down)]
+(defn pull-input [screen out-channel]
+  (let [key-lookup (hash-map \h left \l right \k up \j down)]
     (s/start screen)
 
-    (s/put-string screen 10 10 "Hello, world!")
-    (s/put-string screen 10 11 "Press q key to exit!")
+    (s/put-string screen 10 21 "Hello, world!")
+    (s/put-string screen 30 21 "Press q key to exit!")
     (s/redraw screen)
 
     (loop []
@@ -153,9 +172,17 @@
     )
   )
 
+(def screen (s/get-screen :swing))
 (def c (async/chan 1))
 
 (comment
+
+  (next-move-v5
+    c
+    (partial s/put-string screen)
+    (partial s/redraw screen)
+    [(create-coord 4 3) (create-coord 3 3) (create-coord 2 3)]
+    [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)])
 
   (do
     (async/put! c right)
@@ -167,9 +194,13 @@
 
   (do
     (println "input")
-    (pull-input c)
+    (pull-input screen c)
     (println "input done")
     )
+
+  (do
+    (println "scene")
+    (println "scene done"))
 
   (do
     (println "read loop")
