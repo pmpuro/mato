@@ -146,7 +146,10 @@
                   goodies-still-left goodies]
     (print-scene-v3 print-f redraw-f current-worm goodies-still-left)
     (when-let [next-movement (async/<! moves-channel)]
-      (when (not (collision? current-worm))
+      (if (collision? current-worm)
+        (do
+          (print-f 10 10 "GAME OVER")
+          (redraw-f))
         (recur (move-v2 current-worm next-movement false) goodies-still-left)))))
 
 (defn pull-input [screen out-channel]
