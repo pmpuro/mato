@@ -5,6 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [
                  [org.clojure/clojure "1.11.1"]
+                 [org.clojure/core.async "1.5.648"]
                  [clojure-lanterna "0.9.7"]
                  ]
   :repl-options {:init-ns mato.core})

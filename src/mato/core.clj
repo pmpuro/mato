@@ -1,6 +1,7 @@
 (ns mato.core)
 
 (require '[lanterna.screen :as s])
+(require '[clojure.core.async :as async])
 
 (defn create-coord [x y] {:x x :y y})
 
@@ -129,22 +130,55 @@
   )
 
 
-(defn run-screen []
-  (let [screen (s/get-screen :swing)]
+(defn pull-input [out-channel]
+  (let [screen (s/get-screen :swing)
+        key-lookup (hash-map \h left \l right \k up \j down)]
     (s/start screen)
 
     (s/put-string screen 10 10 "Hello, world!")
     (s/put-string screen 10 11 "Press q key to exit!")
     (s/redraw screen)
+
     (loop []
       (let [input-key (s/get-key-blocking screen)]
         (when-not (= \q input-key)
-          (recur))))
+          (println (str "got " input-key))
+          (when-let [movement (get key-lookup input-key nil)]
+            (println movement)
+            (async/put! out-channel movement)
+            (recur)))))
 
+    (async/close! out-channel)
     (s/stop screen)
     )
   )
 
+(def c (async/chan 1))
+
 (comment
-  (run-screen)
+
+  (do
+    (async/put! c right)
+    )
+
+  (do
+    (async/go
+      (println (async/<! c))))
+
+  (do
+    (println "input")
+    (pull-input c)
+    (println "input done")
+    )
+
+  (do
+    (println "read loop")
+    (async/go-loop []
+      (let [movement (async/<! c)]
+        (when (not (nil? movement))
+          (println "----------------------------------------")
+          (println movement)
+          (recur))))
+    (println "read done"))
+
   )
