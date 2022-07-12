@@ -18,7 +18,7 @@
   (change-coord (create-coord 1 1) right)
   )
 
-(defn move-v2
+(defn move-worm
   ([worm movement grows?]
    (if (nil? movement)
      worm
@@ -29,10 +29,10 @@
             (drop-last)
             (vec)))))
   ([worm movement]
-   (move-v2 worm movement false)))
+   (move-worm worm movement false)))
 
 (comment
-  (move-v2 [(create-coord 1 1)] right true)
+  (move-worm [(create-coord 1 1)] right true)
   )
 
 (def scene-width 20)
@@ -56,7 +56,7 @@
   (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2)))
   )
 
-(defn print-scene-v3 [print-f redraw-f worm goodies]
+(defn print-scene [print-f redraw-f worm goodies]
   (doseq [y (range scene-height)]
     (dotimes [x scene-width]
       (let [this-place (create-coord x y)]
@@ -91,7 +91,7 @@
 (defn engine [moves-channel print-f redraw-f worm goodies]
   (async/go-loop [current-worm worm
                   goodies-still-left goodies]
-    (print-scene-v3 print-f redraw-f current-worm goodies-still-left)
+    (print-scene print-f redraw-f current-worm goodies-still-left)
     (when-let [next-movement (async/<! moves-channel)]
       (if (collision? current-worm)
         (do
@@ -100,7 +100,7 @@
         (let [next-movement-coord (change-coord next-movement (first current-worm))
               next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
           (recur
-            (move-v2 current-worm next-movement next-movement-will-eat)
+            (move-worm current-worm next-movement next-movement-will-eat)
             (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)))))))
 
 (defn start-screen [screen]
@@ -133,7 +133,7 @@
         put-string-f (partial s/put-string screen)
         redraw-f (partial s/redraw screen)]
     (start-screen screen)
-    (print-scene-v3 put-string-f redraw-f worm goodies)
+    (print-scene put-string-f redraw-f worm goodies)
     (engine channel put-string-f redraw-f worm goodies)
     (pull-input screen channel)
     (stop-screen screen)))
