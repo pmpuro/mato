@@ -39,4 +39,25 @@
       true (collision? [(create-coord 1 scene-height)]))))
 
 (comment
+  (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] left)
+  (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] up)
+  )
+
+(deftest test-will-eat
+  (testing "eating"
+    (are [expected result]
+      (= expected result)
+      true (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] left)
+      true (will-eat? [(create-coord 1 1)] [(create-coord 2 1)] right)
+      )
+    )
+  (testing "not eating"
+    (are [expected result]
+      (= expected result)
+      nil (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] right)
+      nil (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] up)
+      )
+    ))
+
+(comment
   (run-all-tests))
