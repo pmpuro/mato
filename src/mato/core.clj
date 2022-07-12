@@ -1,4 +1,6 @@
-(ns mato.core)
+(ns mato.core )
+
+(require '[lanterna.screen :as s])
 
 (defn create-coord [x y] {:x x :y y})
 
@@ -124,4 +126,21 @@
   (next-move-v4 original-worm [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)] (seq [down down right right right up]))
   (next-move-v4 original-worm () (seq [down down right right right]))
   (next-move-v4 original-worm () (seq [left left]))
+  )
+
+(def screen (s/get-screen :swing))
+
+(defn run-screen []
+  (s/start screen)
+
+  (s/put-string screen 10 10 "Hello, world!")
+  (s/put-string screen 10 11 "Press any key to exit!")
+  (s/redraw screen)
+  (s/get-key-blocking screen)
+
+  (s/stop screen)
+  )
+
+(comment
+  (run-screen)
   )
