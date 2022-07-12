@@ -133,14 +133,6 @@
             (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
             next-moves))))))
 
-(defn next-move-v5 [moves-channel print-f redraw-f worm goodies]
-  (async/go-loop [current-worm worm
-                  goodies-still-left goodies]
-    (when-let [next-movement (async/<! moves-channel)]
-      (print-scene-v3 print-f redraw-f current-worm goodies-still-left)
-      (when (not (collision? current-worm))
-        (recur (move-v2 current-worm next-movement false) goodies-still-left)))))
-
 (comment
   original-worm
   (next-move-v4 original-worm [(create-coord 0 6)] (seq [down down right right right]))
@@ -149,6 +141,13 @@
   (next-move-v4 original-worm () (seq [left left]))
   )
 
+(defn next-move-v5 [moves-channel print-f redraw-f worm goodies]
+  (async/go-loop [current-worm worm
+                  goodies-still-left goodies]
+    (print-scene-v3 print-f redraw-f current-worm goodies-still-left)
+    (when-let [next-movement (async/<! moves-channel)]
+      (when (not (collision? current-worm))
+        (recur (move-v2 current-worm next-movement false) goodies-still-left)))))
 
 (defn pull-input [screen out-channel]
   (let [key-lookup (hash-map \h left \l right \k up \j down)]
