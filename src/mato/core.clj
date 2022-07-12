@@ -89,15 +89,14 @@
       (inc x)))
   (redraw-f))
 
-(defn will-eat? [worm goodies moves]
+(defn will-eat? [worm goodies movement]
   (let [head (first worm)
-        next-step (first moves)
-        eating-at (change-coord head next-step)]
+        eating-at (change-coord head movement)]
     (has-coords-in-it? eating-at goodies)))
 
 (comment
-  (will-eat? [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [left])
-  (will-eat? [(create-coord 1 1) (create-coord 2 1)] [(create-coord 0 1)] [up])
+  (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] left)
+  (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] up)
   )
 
 (defn remove-element-if [condition goodie collection]
@@ -150,7 +149,9 @@
         (do
           (print-f 10 10 "GAME OVER")
           (redraw-f))
-        (recur (move-v2 current-worm next-movement false) goodies-still-left)))))
+        (let [next-movement-coord (change-coord next-movement (first current-worm))
+              next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
+          (recur (move-v2 current-worm next-movement next-movement-will-eat) goodies-still-left))))))
 
 (defn start-screen [screen]
   (s/start screen)
