@@ -1,4 +1,4 @@
-(ns mato.core )
+(ns mato.core)
 
 (require '[lanterna.screen :as s])
 
@@ -128,17 +128,21 @@
   (next-move-v4 original-worm () (seq [left left]))
   )
 
-(def screen (s/get-screen :swing))
 
 (defn run-screen []
-  (s/start screen)
+  (let [screen (s/get-screen :swing)]
+    (s/start screen)
 
-  (s/put-string screen 10 10 "Hello, world!")
-  (s/put-string screen 10 11 "Press any key to exit!")
-  (s/redraw screen)
-  (s/get-key-blocking screen)
+    (s/put-string screen 10 10 "Hello, world!")
+    (s/put-string screen 10 11 "Press q key to exit!")
+    (s/redraw screen)
+    (loop []
+      (let [input-key (s/get-key-blocking screen)]
+        (when-not (= \q input-key)
+          (recur))))
 
-  (s/stop screen)
+    (s/stop screen)
+    )
   )
 
 (comment
