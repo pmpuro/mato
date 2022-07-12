@@ -151,7 +151,10 @@
           (redraw-f))
         (let [next-movement-coord (change-coord next-movement (first current-worm))
               next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
-          (recur (move-v2 current-worm next-movement next-movement-will-eat) goodies-still-left))))))
+          (recur
+            (move-v2 current-worm next-movement next-movement-will-eat)
+            (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
+            ))))))
 
 (defn start-screen [screen]
   (s/start screen)
