@@ -14,10 +14,6 @@
     :x (+ (:x coord) (get movement :x 0))
     :y (+ (:y coord) (get movement :y 0))))
 
-(comment
-  (change-coord (create-coord 1 1) right)
-  )
-
 (defn move-worm
   ([worm movement grows?]
    (if (nil? movement)
@@ -30,10 +26,6 @@
             (vec)))))
   ([worm movement]
    (move-worm worm movement false)))
-
-(comment
-  (move-worm [(create-coord 1 1)] right true)
-  )
 
 (def scene-width 20)
 (def scene-height 10)
@@ -51,11 +43,6 @@
 (defn has-coords-in-it? [coord collection]
   (some #(= % coord) collection))
 
-(comment
-  (has-coords-in-it? (create-coord 1 2) nil)
-  (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2)))
-  )
-
 (defn print-scene [print-f redraw-f worm goodies]
   (doseq [y (range scene-height)]
     (dotimes [x scene-width]
@@ -72,11 +59,6 @@
   (let [head (first worm)
         eating-at (change-coord head movement)]
     (has-coords-in-it? eating-at goodies)))
-
-(comment
-  (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] left)
-  (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] up)
-  )
 
 (defn remove-element-if [condition goodie collection]
   (if condition
@@ -139,31 +121,5 @@
     (stop-screen screen)))
 
 (comment
-
   (bootstrap)
-
-  (do
-    (async/put! c right)
-    )
-
-  (do
-    (async/go
-      (println (async/<! c))))
-
-  (do
-    (println "input")
-    (pull-input screen c)
-    (println "input done")
-    )
-
-  (do
-    (println "read loop")
-    (async/go-loop []
-      (let [movement (async/<! c)]
-        (when (not (nil? movement))
-          (println "----------------------------------------")
-          (println movement)
-          (recur))))
-    (println "read done"))
-
   )
