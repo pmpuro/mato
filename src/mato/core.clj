@@ -1,13 +1,8 @@
 (ns mato.core)
-
 (require '[lanterna.screen :as s])
 (require '[clojure.core.async :as async])
 
 (defn create-coord [x y] {:x x :y y})
-
-(def original-worm
-  [(create-coord 0 5) (create-coord 1 5) (create-coord 2 5)]
-  )
 
 (def right {:x 1 :y 0})
 (def left {:x -1 :y 0})
@@ -32,14 +27,9 @@
        (->> worm
             (cons (change-coord (first worm) movement))
             (drop-last)
-            (vec)
-            )
-       )
-     )
-   )
+            (vec)))))
   ([worm movement]
-   (move-v2 worm movement false))
-  )
+   (move-v2 worm movement false)))
 
 (comment
   (move-v2 [(create-coord 1 1)] right true)
@@ -63,19 +53,8 @@
 
 (comment
   (has-coords-in-it? (create-coord 1 2) nil)
-  (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2))))
-
-(defn print-scene-v2 [worm goodies]
-  (doseq [y (range scene-height)]
-    (dotimes [x scene-width]
-      (let [this-place (create-coord x y)]
-        (print
-          (cond
-            (has-coords-in-it? this-place worm) piece-of-worm
-            (has-coords-in-it? this-place goodies) piece-of-goodies
-            :else piece-of-background)))
-      (inc x))
-    (newline)))
+  (has-coords-in-it? (create-coord 1 2) (list (create-coord 2 2) (create-coord 1 2)))
+  )
 
 (defn print-scene-v3 [print-f redraw-f worm goodies]
   (doseq [y (range scene-height)]
@@ -102,42 +81,11 @@
 (defn remove-element-if [condition goodie collection]
   (if condition
     (remove #(= % goodie) collection)
-    collection)
-  )
+    collection))
 
 (comment
   (remove-element-if true 2 [1 2 3])
   (remove-element-if false 2 [1 2 3])
-  )
-
-(defn next-move-v4 [worm goodies moves]
-  (loop [current-worm worm
-         goodies-still-left goodies
-         moves-still-left moves]
-    (if (empty? moves-still-left)
-      (if (collision? current-worm)
-        (println "oops")
-        (do
-          (println "ending")
-          (print-scene-v2 current-worm goodies-still-left))) ; scene after last move
-      (do
-        (println "playing")
-        (print-scene-v2 current-worm goodies-still-left)
-        (let [next-movement (first moves-still-left)
-              next-moves (rest moves-still-left)
-              next-movement-coord (change-coord next-movement (first current-worm))
-              next-movement-will-eat (will-eat? current-worm goodies-still-left next-moves)]
-          (recur
-            (move-v2 current-worm next-movement next-movement-will-eat)
-            (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
-            next-moves))))))
-
-(comment
-  original-worm
-  (next-move-v4 original-worm [(create-coord 0 6)] (seq [down down right right right]))
-  (next-move-v4 original-worm [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)] (seq [down down right right right up]))
-  (next-move-v4 original-worm () (seq [down down right right right]))
-  (next-move-v4 original-worm () (seq [left left]))
   )
 
 (defn engine [moves-channel print-f redraw-f worm goodies]
@@ -153,20 +101,17 @@
               next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
           (recur
             (move-v2 current-worm next-movement next-movement-will-eat)
-            (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)
-            ))))))
+            (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)))))))
 
 (defn start-screen [screen]
   (s/start screen)
 
   (s/put-string screen 10 21 "Hello, world!")
   (s/put-string screen 30 21 "Press q key to exit!")
-  (s/redraw screen)
-  )
+  (s/redraw screen))
 
 (defn stop-screen [screen]
-  (s/stop screen)
-  )
+  (s/stop screen))
 
 (defn pull-input [screen out-channel]
   (let [key-lookup (hash-map \h left \l right \k up \j down)]
@@ -178,13 +123,7 @@
             (println movement)
             (async/put! out-channel movement)
             (recur)))))
-
-    (async/close! out-channel)
-    )
-  )
-
-; (def screen (s/get-screen :swing))
-; (def c (async/chan 1))
+    (async/close! out-channel)))
 
 (defn bootstrap []
   (let [screen (s/get-screen :swing)
@@ -197,19 +136,11 @@
     (print-scene-v3 put-string-f redraw-f worm goodies)
     (engine channel put-string-f redraw-f worm goodies)
     (pull-input screen channel)
-    (stop-screen screen)
-    ))
+    (stop-screen screen)))
 
 (comment
 
   (bootstrap)
-
-  (engine
-    c
-    (partial s/put-string screen)
-    (partial s/redraw screen)
-    [(create-coord 4 3) (create-coord 3 3) (create-coord 2 3)]
-    [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)])
 
   (do
     (async/put! c right)
@@ -224,10 +155,6 @@
     (pull-input screen c)
     (println "input done")
     )
-
-  (do
-    (println "scene")
-    (println "scene done"))
 
   (do
     (println "read loop")
