@@ -55,7 +55,7 @@
     (or (neg? x) (neg? y) (>= x scene-width) (>= y scene-height))))
 
 (def piece-of-worm "X")
-(def piece-of-background "O")
+(def piece-of-background ".")
 (def piece-of-goodies "g")
 
 (defn has-coords-in-it? [coord collection]
