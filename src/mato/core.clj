@@ -152,14 +152,20 @@
           (redraw-f))
         (recur (move-v2 current-worm next-movement false) goodies-still-left)))))
 
+(defn start-screen [screen]
+  (s/start screen)
+
+  (s/put-string screen 10 21 "Hello, world!")
+  (s/put-string screen 30 21 "Press q key to exit!")
+  (s/redraw screen)
+  )
+
+(defn stop-screen [screen]
+  (s/stop screen)
+  )
+
 (defn pull-input [screen out-channel]
   (let [key-lookup (hash-map \h left \l right \k up \j down)]
-    (s/start screen)
-
-    (s/put-string screen 10 21 "Hello, world!")
-    (s/put-string screen 30 21 "Press q key to exit!")
-    (s/redraw screen)
-
     (loop []
       (let [input-key (s/get-key-blocking screen)]
         (when-not (= \q input-key)
@@ -170,7 +176,6 @@
             (recur)))))
 
     (async/close! out-channel)
-    (s/stop screen)
     )
   )
 
@@ -184,9 +189,12 @@
         goodies [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)]
         put-string-f (partial s/put-string screen)
         redraw-f (partial s/redraw screen)]
+    (start-screen screen)
     (print-scene-v3 put-string-f redraw-f worm goodies)
     (engine channel put-string-f redraw-f worm goodies)
-    (pull-input screen channel)))
+    (pull-input screen channel)
+    (stop-screen screen)
+    ))
 
 (comment
 
