@@ -67,8 +67,8 @@
 
 (comment
   (remove-element-if true 2 [1 2 3])
-  (remove-element-if false 2 [1 2 3])
-  )
+  (remove-element-if false 2 [1 2 3]))
+
 
 (defn engine [moves-channel print-f redraw-f worm goodies]
   (async/go-loop [current-worm worm
@@ -121,5 +121,5 @@
     (stop-screen screen)))
 
 (comment
-  (bootstrap)
-  )
+  (bootstrap))
+
