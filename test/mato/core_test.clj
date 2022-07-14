@@ -23,6 +23,15 @@
           empty-map {}]
       (is (= (hash-map :x expected-x :y expected-y) (mato.core/change-coord {:x x1 :y y1} empty-map))))))
 
+(deftest test-move-worm
+  (testing "movement without grow"
+    (is (= [{:x 2 :y 2}] (move-worm [(create-coord 1 2)] right false)))
+    (is (= [{:x 2 :y 2}] (move-worm [(create-coord 2 1)] down false))))
+  (testing "movement with grow"
+    (is (= [{:x 2 :y 2} {:x 1 :y 2}] (move-worm [(create-coord 1 2)] right true)))
+    (is (= [{:x 2 :y 2} {:x 2 :y 1}] (move-worm [(create-coord 2 1)] down true))))
+  )
+
 (deftest test-collision
   (testing "no collision"
     (are [expected result]
