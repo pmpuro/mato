@@ -60,15 +60,10 @@
         eating-at (change-coord head movement)]
     (has-coords-in-it? eating-at goodies)))
 
-(defn remove-element-if [condition goodie collection]
+(defn remove-item-if [condition item collection]
   (if condition
-    (remove #(= % goodie) collection)
+    (remove #(= % item) collection)
     collection))
-
-(comment
-  (remove-element-if true 2 [1 2 3])
-  (remove-element-if false 2 [1 2 3]))
-
 
 (defn engine [moves-channel print-f redraw-f worm goodies]
   (async/go-loop [current-worm worm
@@ -83,7 +78,7 @@
               next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
           (recur
             (move-worm current-worm next-movement next-movement-will-eat)
-            (remove-element-if next-movement-will-eat next-movement-coord goodies-still-left)))))))
+            (remove-item-if next-movement-will-eat next-movement-coord goodies-still-left)))))))
 
 (defn start-screen [screen]
   (s/start screen)

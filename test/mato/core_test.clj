@@ -66,5 +66,9 @@
       nil (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] right)
       nil (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] up))))
 
+(deftest test-remove-item-if
+  (is (= [1 3] (remove-item-if true 2 [1 2 3])))
+  (is (= [1 2 3 (remove-item-if false 2 [1 2 3])])))
+
 (comment
   (run-all-tests))
