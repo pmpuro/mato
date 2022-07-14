@@ -94,14 +94,14 @@
 
 (defn pull-input [screen out-channel]
   (let [key-lookup (hash-map \h left \l right \k up \j down)]
-    (loop []
-      (let [input-key (s/get-key-blocking screen)]
+    (loop [previous-movement right]
+      (let [input-key (s/get-key-blocking screen {:timeout 350})]
         (when-not (= \q input-key)
           (println (str "got " input-key))
-          (when-let [movement (get key-lookup input-key nil)]
+          (when-let [movement (get key-lookup input-key previous-movement)]
             (println movement)
             (async/put! out-channel movement)
-            (recur)))))
+            (recur movement)))))
     (async/close! out-channel)))
 
 (defn bootstrap []
