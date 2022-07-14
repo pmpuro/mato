@@ -85,7 +85,7 @@
 (defn start-screen [screen]
   (s/start screen)
 
-  (s/put-string screen 10 21 "Hello, world!")
+  (s/put-string screen 10 21 "h, j, k, l to turn")
   (s/put-string screen 30 21 "Press q key to exit!")
   (s/redraw screen))
 
