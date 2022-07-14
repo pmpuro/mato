@@ -54,11 +54,6 @@
   (is (nil? (has-coords-in-it? 1 [2 3]))))
 
 (deftest test-will-eat
-  (is (= true (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] left)))
-  (is (= true (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] up)))
-  (is (nil? (will-eat? [(create-coord 1 1)] [(create-coord 10 10)] down))))
-
-(deftest test-will-eat
   (testing "eating"
     (are [expected result]
       (= expected result)
