@@ -1,6 +1,8 @@
-(ns mato.core)
-(require '[lanterna.screen :as s])
-(require '[clojure.core.async :as async])
+(ns mato.core
+  (:gen-class)
+  (:require [lanterna.screen :as s])
+  (:require [clojure.core.async :as async])
+  )
 
 (defn create-coord [x y] {:x x :y y})
 
