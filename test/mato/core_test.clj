@@ -49,6 +49,10 @@
       true (collision? [(create-coord scene-width 1)])
       true (collision? [(create-coord 1 scene-height)]))))
 
+(deftest test-has-coord-in-it
+  (is (= true (has-coords-in-it? 1 [2 1])))
+  (is (nil? (has-coords-in-it? 1 [2 3]))))
+
 (comment
   (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] left)
   (will-eat? [(create-coord 1 1)] [(create-coord 0 1)] up))
