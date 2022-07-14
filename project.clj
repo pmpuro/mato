@@ -8,4 +8,6 @@
                  [org.clojure/core.async "1.5.648"]
                  [clojure-lanterna "0.9.7"]
                  ]
-  :repl-options {:init-ns mato.core})
+  :repl-options {:init-ns mato.core}
+  :main mato.core
+  )

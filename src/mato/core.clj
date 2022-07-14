@@ -118,3 +118,4 @@
 (comment
   (bootstrap))
 
+(defn -main [] (bootstrap))
