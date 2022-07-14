@@ -1,0 +1,24 @@
+name: Unit tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Run unit tests
+    runs-on: temurin-18-lein-alpine
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Tests
+      - run: |
+          lein test
