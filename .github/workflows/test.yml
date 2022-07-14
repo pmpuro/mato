@@ -12,7 +12,7 @@ permissions:
 jobs:
   tests:
     name: Run unit tests
-    runs-on: temurin-18-lein-alpine
+    runs-on: clojure-latest
     permissions:
       contents: read
     steps:
