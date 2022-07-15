@@ -12,9 +12,11 @@ permissions:
 jobs:
   tests:
     name: Run unit tests
-    runs-on: clojure-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read
+    container:
+      image: clojure/latest
     steps:
       - uses: actions/checkout@v3
       - run: |
