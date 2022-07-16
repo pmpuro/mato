@@ -76,11 +76,15 @@
         (do
           (print-f 10 10 "GAME OVER")
           (redraw-f))
-        (let [next-movement-coord (change-coord next-movement (first current-worm))
-              next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
-          (recur
-            (move-worm current-worm next-movement next-movement-will-eat)
-            (remove-item-if next-movement-will-eat next-movement-coord goodies-still-left)))))))
+        (if (empty? goodies-still-left) 
+          (do 
+            (print-f 10 10 "WELL DONE")
+            (redraw-f)) 
+          (let [next-movement-coord (change-coord next-movement (first current-worm))
+                next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
+            (recur
+              (move-worm current-worm next-movement next-movement-will-eat)
+              (remove-item-if next-movement-will-eat next-movement-coord goodies-still-left))))))))
 
 (defn start-screen [screen]
   (s/start screen)
