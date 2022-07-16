@@ -67,6 +67,12 @@
     (remove #(= % item) collection)
     collection))
 
+(def game-over-coordinates (create-coord 10 10))
+(def well-done-coordinates (create-coord 10 10))
+
+(def game-over-message "GAME OVER")
+(def well-done-message "WELL DONE")
+
 (defn engine [moves-channel print-f redraw-f worm goodies]
   (async/go-loop [current-worm worm
                   goodies-still-left goodies]
@@ -74,11 +80,11 @@
     (when-let [next-movement (async/<! moves-channel)]
       (if (collision? current-worm)
         (do
-          (print-f 10 10 "GAME OVER")
+          (print-f (:x game-over-coordinates) (:y game-over-coordinates) game-over-message)
           (redraw-f))
         (if (empty? goodies-still-left) 
           (do 
-            (print-f 10 10 "WELL DONE")
+            (print-f (:x well-done-coordinates) (:y well-done-coordinates) well-done-message)
             (redraw-f)) 
           (let [next-movement-coord (change-coord next-movement (first current-worm))
                 next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
