@@ -73,26 +73,39 @@
 (def game-over-message "GAME OVER")
 (def well-done-message "WELL DONE")
 
+; fn engine-step -> [worm goodies]
+;                -> [:game-over nil]
+;                -> [:winner nil]
+(defn engine-step [next-movement worm goodies]
+  (let [next-movement-coord (change-coord next-movement (first worm))
+        next-movement-will-eat (will-eat? worm goodies next-movement)]
+    (if (collision? worm)
+      [:game-over nil]
+      (if (empty? goodies) 
+        [:winner nil]
+        [(move-worm worm next-movement next-movement-will-eat)
+         (remove-item-if next-movement-will-eat next-movement-coord goodies)]))))
+
 ; refactor? 
 ; print-f and redraw-f functions could be replaced with a channel.
-(defn engine [moves-channel print-f redraw-f worm goodies]
-  (async/go-loop [current-worm worm
-                  goodies-still-left goodies]
+(defn run-engine [moves-channel print-f redraw-f worm goodies]
+  (async/go-loop
+    [current-worm worm
+     goodies-still-left goodies]
     (print-scene print-f redraw-f current-worm goodies-still-left)
     (when-let [next-movement (async/<! moves-channel)]
-      (if (collision? current-worm)
-        (do
-          (print-f (:x game-over-coordinates) (:y game-over-coordinates) game-over-message)
-          (redraw-f))
-        (if (empty? goodies-still-left) 
-          (do 
+      (let [[new-worm new-goodies] (engine-step next-movement current-worm goodies-still-left)]
+        (cond
+          (= :winner new-worm) 
+          (do
             (print-f (:x well-done-coordinates) (:y well-done-coordinates) well-done-message)
-            (redraw-f)) 
-          (let [next-movement-coord (change-coord next-movement (first current-worm))
-                next-movement-will-eat (will-eat? current-worm goodies-still-left next-movement)]
-            (recur
-              (move-worm current-worm next-movement next-movement-will-eat)
-              (remove-item-if next-movement-will-eat next-movement-coord goodies-still-left))))))))
+            (redraw-f))
+          (= :game-over new-worm)
+          (do
+            (print-f (:x game-over-coordinates) (:y game-over-coordinates) game-over-message)
+            (redraw-f))
+          :else 
+          (recur new-worm new-goodies))))))
 
 (defn start-screen [screen]
   (s/start screen)
@@ -112,7 +125,7 @@
             (recur movement)))))
     (async/close! out-channel)))
 
-(defn bootstrap []
+(defn bootstrap-with-run-engine []
   (let [screen (s/get-screen :swing)
         channel (async/chan 1)
         worm [(create-coord 4 3) (create-coord 3 3) (create-coord 2 3)]
@@ -121,11 +134,13 @@
         redraw-f (partial s/redraw screen)]
     (start-screen screen)
     (print-scene put-string-f redraw-f worm goodies)
-    (engine channel put-string-f redraw-f worm goodies)
+    (run-engine channel put-string-f redraw-f worm goodies)
     (pull-input screen channel)
     (stop-screen screen)))
 
 (comment
-  (bootstrap))
+  (bootstrap-with-run-engine)
+  )
 
-(defn -main [] (bootstrap))
+(defn -main [] (bootstrap-with-run-engine))
+
