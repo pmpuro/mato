@@ -1,6 +1,7 @@
 (ns mato.core-test
   (:require [clojure.test :refer :all]
-            [mato.core :refer :all]))
+            [mato.core :refer :all]
+            [clojure.core.async :refer :all :as async]))
 
 (deftest test-create-coord
   (is (map? (create-coord 1 1)))
@@ -69,6 +70,41 @@
 (deftest test-remove-item-if
   (is (= [1 3] (remove-item-if true 2 [1 2 3])))
   (is (= [1 2 3 (remove-item-if false 2 [1 2 3])])))
+
+; defn engine [moves-channel print-f redraw-f worm goodies]
+(deftest test-engine
+  (testing "movements"
+    (let [scene (atom {})
+          channel (async/chan 1)
+          test-sequence 
+          (fn []
+            (let [result (async/chan 1)]
+              (let [worm [(create-coord 1 1)] goodies [(create-coord 0 0)] ]
+                (async/put! channel right)
+                (close! channel)
+                (engine
+                  channel, 
+                  (fn [x y piece] 
+                    ;(println "print")
+                    (swap! scene assoc (create-coord x y) piece) 
+                    ;(println @scene)
+                    ) 
+                  (fn []
+                    ;(println "redraw")
+                    ;(println @scene)
+                    ) 
+                  worm 
+                  goodies)
+                )
+              (close! result)
+              result)
+            )
+          ]
+
+      (test-sequence)
+
+      (. Thread (sleep 100))
+      (is (= piece-of-worm (get @scene (create-coord 2 1)))))))
 
 (comment
   (run-all-tests))
