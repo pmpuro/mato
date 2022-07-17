@@ -1,7 +1,7 @@
 (ns mato.core-test
   (:require [clojure.test :refer :all]
             [mato.core :refer :all]
-            [clojure.core.async :as async]))
+            ))
 
 (deftest test-create-coord
   (is (map? (create-coord 1 1)))
@@ -30,8 +30,7 @@
     (is (= [{:x 2 :y 2}] (move-worm [(create-coord 2 1)] down false))))
   (testing "movement with grow"
     (is (= [{:x 2 :y 2} {:x 1 :y 2}] (move-worm [(create-coord 1 2)] right true)))
-    (is (= [{:x 2 :y 2} {:x 2 :y 1}] (move-worm [(create-coord 2 1)] down true))))
-  )
+    (is (= [{:x 2 :y 2} {:x 2 :y 1}] (move-worm [(create-coord 2 1)] down true)))))
 
 (deftest test-collision
   (testing "no collision"
