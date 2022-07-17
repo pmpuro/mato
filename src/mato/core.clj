@@ -73,6 +73,8 @@
 (def game-over-message "GAME OVER")
 (def well-done-message "WELL DONE")
 
+; refactor? 
+; print-f and redraw-f functions could be replaced with a channel.
 (defn engine [moves-channel print-f redraw-f worm goodies]
   (async/go-loop [current-worm worm
                   goodies-still-left goodies]
