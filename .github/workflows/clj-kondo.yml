@@ -1,0 +1,25 @@
+name: clj-kondo
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read    
+    
+jobs:
+  clj-kondo:
+    name: Run clj-kondo lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v1
+    - uses: DeLaGuardo/clojure-lint-action@master
+      with:
+        clj-kondo-args: --lint src
+        check-name: Clj-kondo Report
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        
