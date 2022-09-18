@@ -2,7 +2,18 @@
  :deps {
         org.clojure/clojure {:mvn/version "1.11.1"}, 
         org.clojure/core.async {:mvn/version "1.5.648"}, 
-        clojure-lanterna/clojure-lanterna {:mvn/version "0.9.7"}}
+        clojure-lanterna/clojure-lanterna {:mvn/version "0.9.7"}
+        }
 
  :aliases {
-           :run { :main-opts ["-m" "mato.core"]}}}
+           :run { :main-opts ["-m" "mato.core"]}
+
+           :test/run
+           {:extra-paths ["test"]
+            :extra-deps {lambdaisland/kaocha {:mvn/version "1.69.1069"}}
+            :main-opts   ["-m" "kaocha.runner"]
+            :exec-fn kaocha.runner/exec-fn
+            :exec-args {}}
+           }
+ }
+
