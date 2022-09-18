@@ -20,4 +20,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          lein test
+        clojure -M:test/run
