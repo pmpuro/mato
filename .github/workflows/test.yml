@@ -19,5 +19,5 @@ jobs:
       image: clojure:latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-        clojure -M:test/run
+      - run: clojure -M:test/run
+
