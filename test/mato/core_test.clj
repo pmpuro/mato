@@ -68,7 +68,7 @@
 
 (deftest test-remove-item-if
   (is (= [1 3] (remove-item-if true 2 [1 2 3])))
-  (is (= [1 2 3 (remove-item-if false 2 [1 2 3])])))
+  (is (= [1 2 3] (remove-item-if false 2 [1 2 3]))))
 
 (deftest test-engine-step
   (testing "movements"
