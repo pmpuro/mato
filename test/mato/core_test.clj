@@ -1,7 +1,6 @@
 (ns mato.core-test
-  (:require [clojure.test :refer :all]
-            [mato.core :refer :all]
-            ))
+  (:require [clojure.test :refer [are deftest is run-all-tests testing]]
+            [mato.core :refer [collision? create-coord down engine-step has-coords-in-it? left move-worm remove-item-if right scene-height scene-width up will-eat?]]))
 
 (deftest test-create-coord
   (is (map? (create-coord 1 1)))
