@@ -129,8 +129,8 @@
 (defn bootstrap-with-run-engine []
   (let [screen (s/get-screen :swing)
         channel (async/chan 1)
-        worm [(create-coord 4 3) (create-coord 3 3) (create-coord 2 3)]
-        goodies [(create-coord 0 6) (create-coord 0 0) (create-coord 10 3)]
+        worm (mapv create-coord [4 3 2] [3 3 3])
+        goodies (mapv create-coord [0 0 10] [6 0 3])
         put-string-f (partial s/put-string screen)
         redraw-f (partial s/redraw screen)]
     (start-screen screen)
