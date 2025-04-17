@@ -108,9 +108,10 @@
           (recur new-worm new-goodies))))))
 
 (defn start-screen [screen]
-  (s/start screen)
-  (s/put-string screen 10 20 "Use h, j, k, l to turn. Press q key to exit!")
-  (s/redraw screen))
+  (-> screen
+      (s/start)
+      (s/put-string 10 20 "Use h, j, k, l to turn. Press q key to exit!")
+      (s/redraw)))
 
 (defn stop-screen [screen]
   (s/stop screen))
