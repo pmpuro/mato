@@ -71,17 +71,17 @@
 
 (deftest test-engine-step
   (testing "movements"
-    (let [worm [(create-coord 1 1)] 
-          goodies [(create-coord 0 0)]]
-      (let [[resulted-worm resulted-goodies] (engine-step right worm goodies)]
-        (is (= [(create-coord 2 1)] resulted-worm))
-        (is (= goodies resulted-goodies)))))
+    (let [worm [(create-coord 1 1)]
+          goodies [(create-coord 0 0)]
+          [resulted-worm resulted-goodies] (engine-step right worm goodies)]
+      (is (= [(create-coord 2 1)] resulted-worm))
+      (is (= goodies resulted-goodies))))
   (testing "worm growth"
-    (let [worm [(create-coord 1 1)] 
-          goodies [(create-coord 2 1)]]
-      (let [[resulted-worm resulted-goodies] (engine-step right worm goodies)]
-        (is (= [(create-coord 2 1) (create-coord 1 1)] (into [] resulted-worm)))
-        (is (empty? resulted-goodies))))))
+    (let [worm [(create-coord 1 1)]
+          goodies [(create-coord 2 1)]
+          [resulted-worm resulted-goodies] (engine-step right worm goodies)]
+      (is (= [(create-coord 2 1) (create-coord 1 1)] (into [] resulted-worm)))
+      (is (empty? resulted-goodies)))))
 
 (comment
   (run-all-tests))
