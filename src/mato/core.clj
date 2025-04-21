@@ -114,10 +114,10 @@
 (def down-key \j)
 
 (defn start-screen [screen]
-  (-> screen
-      (s/start)
-      (s/put-string 10 20 (str "Use " left-key ", " right-key ", " up-key ", " down-key " to turn. Press " quit-key " key to exit!"))
-      (s/redraw)))
+  (let [help (fn [scr] (s/put-string scr 10 20 (str "Use " left-key ", " right-key ", " up-key ", " down-key " to turn. Press " quit-key " key to exit!")))]
+    (s/start screen)
+    (help screen)
+    (s/redraw screen)))
 
 (defn stop-screen [screen]
   (s/stop screen))
