@@ -90,8 +90,8 @@
 ; print-f and redraw-f functions could be replaced with a channel.
 (defn run-engine [moves-channel print-f redraw-f worm goodies]
   (async/go-loop
-    [current-worm worm
-     goodies-still-left goodies]
+   [current-worm worm
+    goodies-still-left goodies]
     (print-scene print-f redraw-f current-worm goodies-still-left)
     (when-let [next-movement (async/<! moves-channel)]
       (let [[new-worm new-goodies] (engine-step next-movement current-worm goodies-still-left)]
@@ -107,21 +107,20 @@
           :else 
           (recur new-worm new-goodies))))))
 
-(defn start-screen [screen]
-  (-> screen
-      (s/start)
-      (s/put-string 10 20 "Use h, j, k, l to turn. Press q key to exit!")
-      (s/redraw)))
-
-(defn stop-screen [screen]
-  (s/stop screen))
-
 (def quit-key \q)
-
 (def left-key \h)
 (def right-key \l)
 (def up-key \k)
 (def down-key \j)
+
+(defn start-screen [screen]
+  (-> screen
+      (s/start)
+      (s/put-string 10 20 (str "Use " left-key ", " right-key ", " up-key ", " down-key " to turn. Press " quit-key " key to exit!"))
+      (s/redraw)))
+
+(defn stop-screen [screen]
+  (s/stop screen))
 
 (defn pull-input [screen out-channel]
   (let [key-lookup (hash-map left-key left right-key right up-key up down-key down)]
