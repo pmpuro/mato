@@ -118,8 +118,13 @@
 
 (def quit-key \q)
 
+(def left-key \h)
+(def right-key \l)
+(def up-key \k)
+(def down-key \j)
+
 (defn pull-input [screen out-channel]
-  (let [key-lookup (hash-map \h left \l right \k up \j down)]
+  (let [key-lookup (hash-map left-key left right-key right up-key up down-key down)]
     (loop [previous-movement right]
       (let [input-key (s/get-key-blocking screen {:timeout 350})]
         (when-not (= quit-key input-key)
