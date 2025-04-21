@@ -1,7 +1,7 @@
 {
  :deps {
-        org.clojure/clojure {:mvn/version "1.11.1"}, 
-        org.clojure/core.async {:mvn/version "1.5.648"}, 
+        org.clojure/clojure {:mvn/version "1.12.0"}, 
+        org.clojure/core.async {:mvn/version "1.8.741"}, 
         clojure-lanterna/clojure-lanterna {:mvn/version "0.9.7"}
         }
 
